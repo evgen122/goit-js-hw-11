@@ -2,6 +2,7 @@
 // axios.defaults.headers.common['x-api-key'] =
 //   '39226453-68311701c5a3afc9a6c056ab8';
 
+import axios from 'axios';
 import Notiflix from 'notiflix';
 
 // Ваш API-ключ:39226453-68311701c5a3afc9a6c056ab8
@@ -16,9 +17,9 @@ elements.serchForm.addEventListener('submit', handlerSubmit);
 
 function handlerSubmit(evt) {
   evt.preventDefault();
-  //   const dataInput = evt.currentTarget.textContent;
-
-  //   console.log(elements.inputData.value);
+  //   const dataInput = evt.currentTarget.value;
+  //   const dataInput = evt.target.value;
+  //   console.log('dataInput', dataInput);
 
   const options = ({ key, q, imageType, orientation, safesearch } = {
     key: '39226453-68311701c5a3afc9a6c056ab8',
@@ -32,12 +33,27 @@ function handlerSubmit(evt) {
 
   //   options.q = evt.currentTarget.textContent;
 
-  //   const urlSerch =
-  //     `${urlData}?, {${options}}`;
-  //   console.log(urlSerch);
+  const urlSerch = `${urlData}?key=${key}&q=${q}&image-type=${imageType}&orientation=${orientation}&safesearch=${safesearch}}`;
+  console.log(urlSerch);
 
-  //   fetchS(urlSerch);
+  fetchS(urlSerch);
   //   console.log(fetchS);
 }
 
-function fetchS(urlSerch) {}
+async function fetchS(urlSerch) {
+  try {
+    const response = await axios.get('urlSerch');
+    console.log(response);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+//   async function getUser() {
+//     try {
+//       const response = await axios.get('/user?ID=12345');
+//       console.log(response);
+//     } catch (error) {
+//       console.error(error);
+//     }
+//   }
