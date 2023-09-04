@@ -7,23 +7,23 @@ import Notiflix from 'notiflix';
 
 // Ваш API-ключ:39226453-68311701c5a3afc9a6c056ab8
 
-const elements = ({ serchForm, inputData, galleryImg } = {
+const elements = {
   serchForm: document.querySelector('#search-form'),
   inputData: document.querySelector('input[name=searchQuery]'),
   galleryImg: document.querySelector('.gallery'),
-});
+};
 
 const urlData = 'https://pixabay.com/api/';
 
-// elements.serchForm.addEventListener('submit', handlerSubmit);
-serchForm.addEventListener('submit', handlerSubmit);
+elements.serchForm.addEventListener('submit', handlerSubmit);
+// serchForm.addEventListener('submit', handlerSubmit);
 
-function handlerSubmit(evt) {
+async function handlerSubmit(evt) {
   evt.preventDefault();
   //   const dataInput = evt.currentTarget.value;
   //   const dataInput = evt.target.value;
   //   console.log('dataInput', dataInput);
-  const inputData = evt.currentTarget.elements[0].value;
+  // const wordSerch = evt.currentTarget.elements[0].value;
   const options = ({ key, q, imageType, orientation, safesearch } = {
     key: '39226453-68311701c5a3afc9a6c056ab8',
     q: 'cat',
@@ -41,40 +41,78 @@ function handlerSubmit(evt) {
   // const urlSerch = urlData;
   // console.log(urlSerch);
 
-  const dataArr = fetchS(urlSerch);
+  // let dataArr = [];
+  const dataArr = await fetchS(urlSerch);
+
+  // console.log(fetchS(urlSerch));
   // return dataArr;
   console.log(dataArr);
 
   formGallery(dataArr);
   //   choiceImg(dataArr);
 }
+const loadMore = `<button type="button" class="load-more">Load more</button>`;
+elements.galleryImg.insertAdjacentHTML('afterend', loadMore);
 
 async function fetchS(urlSerch) {
   try {
-    const response = await axios.get(urlData, {
-      params: {
-        key: '39226453-68311701c5a3afc9a6c056ab8',
-        q: 'cat',
-        // q: evt.currentTarget.elements[0].value,
-        imageType: 'photo',
-        orientation: 'horizontal',
-        safesearch: 'true',
-      },
-    });
-    console.log(response.data.hits);
-    // const datai = response.data.hits;
-    console.log(response);
-    return response.data.hits;
+    const response = await axios.get(urlSerch);
+    // console.log(response.data.hits);
+    // console.log(response);
+    return await response.data.hits;
     // const respData = await response.data.hits;
   } catch (error) {
     console.error(
-      'Sorry, there are no images matching your search query. Please try again.'
+      error
+      // 'Sorry, there are no images matching your search query. Please try again.'
     );
     return error;
   }
 }
 
-function formGallery(dataArr) {}
+function formGallery(dataArr) {
+  const marcupGallery = dataArr.map(
+    (
+      {
+        webformatURL,
+        largeImageURL,
+        tags,
+        likes,
+        views,
+        comments,
+        downloads,
+      } = {
+        webformatURL: dataArr.hits.webformatURL,
+        largeImageURL: dataArr.hits.largeImageURL,
+        tags: dataArr.hits.tags,
+        likes: dataArr.hits.likes,
+        views: ddataArrta.hits.views,
+        comments: dataArr.hits.comments,
+        downloads: dataArr.hits.downloads,
+      }
+    ) => {
+      // console.log(likes);
+      const photoCard = `<div class="photo-card">
+    <img src="${webformatURL}" alt="${tags}" loading="lazy" />
+    <div class="info">
+      <p class="info-item">
+        <b>Likes</b>${likes}
+      </p>
+      <p class="info-item">
+        <b>Views</b>${views}
+      </p>
+      <p class="info-item">
+        <b>Comments</b>${comments}
+      </p>
+      <p class="info-item">
+        <b>Downloads</b>${downloads}
+      </p>
+    </div>
+  </div>`;
+      elements.galleryImg.insertAdjacentHTML('beforeend', photoCard);
+    }
+  );
+}
 // вставить разметку для массива объектов
 // разметку обернуть в мар, вставить элементы массива
 // const marcupGallery = dataArr
@@ -127,7 +165,7 @@ function formGallery(dataArr) {}
 //       }
 //     )
 //     .json();
-//   galleryImg.insertAdjacentHTML('beforeend', marcupGallery);
+//   elements.galleryImg.insertAdjacentHTML('beforeend', marcupGallery);
 // }
 
 // function choiceImg(dataArr) {}
