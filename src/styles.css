@@ -1,0 +1,52 @@
+.form {
+  overflow: hidden;
+  background-color: rgb(48, 118, 208);
+  position: fixed; /* Set the navbar to fixed position */
+  top: 0; /* Position the navbar at the top of the page */
+  width: 100%; /* Full width */
+  display: flex;
+  overflow: hidden;
+  justify-content: center;
+}
+
+.search-form {
+}
+
+.form-gallery {
+}
+
+.gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.photo-card {
+  width: 400px;
+}
+
+.img {
+  width: 100%;
+}
+
+.info {
+  display: flex;
+  justify-content: center;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  margin: auto;
+}
+
+.btn-load-more {
+  text-align: center;
+}
+
+.load-more {
+  background-color: rgb(89, 98, 102);
+}

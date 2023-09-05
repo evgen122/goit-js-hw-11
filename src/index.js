@@ -1,11 +1,5 @@
-// import axios from 'axios';
-// axios.defaults.headers.common['x-api-key'] =
-//   '39226453-68311701c5a3afc9a6c056ab8';
-
 import axios from 'axios';
 import Notiflix from 'notiflix';
-
-// Ваш API-ключ:39226453-68311701c5a3afc9a6c056ab8
 
 const elements = {
   serchForm: document.querySelector('#search-form'),
@@ -14,40 +8,35 @@ const elements = {
   btnLoadMore: document.querySelector('button.load-more'),
 };
 
-// const loadMore = `<button type="button" class="load-more">Load more</button>`;
-
-// console.log(loadMore);
-// loadMore.querySelector('button.load-more');
-
 const urlData = 'https://pixabay.com/api/';
+const parametr = {
+  params: {
+    key: '39226453-68311701c5a3afc9a6c056ab8',
+    imageType: 'photo',
+    orientation: 'horizontal',
+    safesearch: 'true',
+    page: 1,
+    per_page: 40,
+  },
+};
 
 elements.serchForm.addEventListener('submit', handlerSubmit);
-elements.btnLoadMore.addEventListener('submit', handlerLoadMore);
+elements.btnLoadMore.addEventListener('click', handlerLoadMore);
 
 elements.btnLoadMore.hidden = true;
-// elements.btnLoadMore.hidden = false;
 
 async function handlerSubmit(evt) {
   evt.preventDefault();
+  elements.galleryImg.innerHTML = '';
 
-  const parametr = {
-    params: {
-      key: '39226453-68311701c5a3afc9a6c056ab8',
-      q: 'cat',
-      // q: evt.currentTarget.elements[0].value,
-      imageType: 'photo',
-      orientation: 'horizontal',
-      safesearch: 'true',
-      page: 13,
-      per_page: 40,
-    },
-  };
-  parametr.params.page = 4;
+  parametr.params.page = 1;
+  parametr.params.q = evt.currentTarget.elements[0].value;
+
   const dataObj = await fetchS(urlData, parametr);
   const dataArr = dataObj.hits;
-  // console.log(parametr);
-  // console.log(dataObj);
+
   formGallery(dataArr);
+
   if (parametr.params.page < dataObj.totalHits / parametr.params.per_page) {
     elements.btnLoadMore.hidden = false;
   } else {
@@ -58,8 +47,14 @@ async function handlerSubmit(evt) {
 async function fetchS(urlData, parametr) {
   try {
     const response = await axios.get(urlData, parametr);
-    // console.log(response.data.hits);
+    console.log(response.data.hits);
+    console.log(response.data.hits.length);
     // console.log(response);
+    if (response.data.hits.length === 0) {
+      Notiflix.Notify.warning(
+        'Sorry, there are no images matching your search query. Please try again.'
+      );
+    }
     return await response.data;
   } catch (error) {
     console.error(
@@ -86,14 +81,13 @@ function formGallery(dataArr) {
         largeImageURL: dataArr.hits.largeImageURL,
         tags: dataArr.hits.tags,
         likes: dataArr.hits.likes,
-        views: ddataArrta.hits.views,
+        views: dataArr.hits.views,
         comments: dataArr.hits.comments,
         downloads: dataArr.hits.downloads,
       }
     ) => {
-      // console.log(likes);
       const photoCard = `<div class="photo-card">
-    <img src="${webformatURL}" alt="${tags}" loading="lazy" />
+    <img class="img" src="${webformatURL}" alt="${tags}" loading="lazy" />
     <div class="info">
       <p class="info-item">
         <b>Likes</b>${likes}
@@ -109,13 +103,28 @@ function formGallery(dataArr) {
       </p>
     </div>
   </div>`;
+
       elements.galleryImg.insertAdjacentHTML('beforeend', photoCard);
     }
   );
 }
 
-function handlerLoadMore() {
-  parametr.params.page++;
-  console.log(parametr.params.page);
+async function handlerLoadMore() {
+  parametr.params.page += 1;
+
+  const dataObj = await fetchS(urlData, parametr);
+  const dataArr = dataObj.hits;
+
+  formGallery(dataArr);
+
+  if (parametr.params.page < dataObj.totalHits / parametr.params.per_page) {
+    elements.btnLoadMore.hidden = false;
+  } else {
+    elements.btnLoadMore.hidden = true;
+
+    elements.galleryImg.insertAdjacentHTML(
+      'beforeend',
+      "We're sorry, but you've reached the end of search results."
+    );
+  }
 }
-// handlerLoadMore();
