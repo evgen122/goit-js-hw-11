@@ -15,7 +15,7 @@ const parametr = {
     imageType: 'photo',
     orientation: 'horizontal',
     safesearch: 'true',
-    page: 1,
+    page: 12,
     per_page: 40,
   },
 };
@@ -29,7 +29,7 @@ async function handlerSubmit(evt) {
   evt.preventDefault();
   elements.galleryImg.innerHTML = '';
 
-  parametr.params.page = 1;
+  parametr.params.page = 12;
   parametr.params.q = evt.currentTarget.elements[0].value;
 
   const dataObj = await fetchS(urlData, parametr);
@@ -47,8 +47,8 @@ async function handlerSubmit(evt) {
 async function fetchS(urlData, parametr) {
   try {
     const response = await axios.get(urlData, parametr);
-    console.log(response.data.hits);
-    console.log(response.data.hits.length);
+    // console.log(response.data.hits);
+    // console.log(response.data.hits.length);
     // console.log(response);
     if (response.data.hits.length === 0) {
       Notiflix.Notify.warning(
@@ -114,6 +114,7 @@ async function handlerLoadMore() {
 
   const dataObj = await fetchS(urlData, parametr);
   const dataArr = dataObj.hits;
+  console.log(parametr.params.page);
 
   formGallery(dataArr);
 
@@ -123,7 +124,7 @@ async function handlerLoadMore() {
     elements.btnLoadMore.hidden = true;
 
     elements.galleryImg.insertAdjacentHTML(
-      'beforeend',
+      'afterend',
       "We're sorry, but you've reached the end of search results."
     );
   }
