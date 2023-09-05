@@ -6,6 +6,7 @@ const elements = {
   inputData: document.querySelector('input[name=searchQuery]'),
   galleryImg: document.querySelector('.gallery'),
   btnLoadMore: document.querySelector('button.load-more'),
+  warning: document.querySelector('.warning'),
 };
 
 const urlData = 'https://pixabay.com/api/';
@@ -15,7 +16,7 @@ const parametr = {
     imageType: 'photo',
     orientation: 'horizontal',
     safesearch: 'true',
-    page: 12,
+    page: 1,
     per_page: 40,
   },
 };
@@ -24,12 +25,14 @@ elements.serchForm.addEventListener('submit', handlerSubmit);
 elements.btnLoadMore.addEventListener('click', handlerLoadMore);
 
 elements.btnLoadMore.hidden = true;
+elements.warning.hidden = true;
 
 async function handlerSubmit(evt) {
   evt.preventDefault();
   elements.galleryImg.innerHTML = '';
+  elements.warning.hidden = true;
 
-  parametr.params.page = 12;
+  parametr.params.page = 1;
   parametr.params.q = evt.currentTarget.elements[0].value;
 
   const dataObj = await fetchS(urlData, parametr);
@@ -47,9 +50,6 @@ async function handlerSubmit(evt) {
 async function fetchS(urlData, parametr) {
   try {
     const response = await axios.get(urlData, parametr);
-    // console.log(response.data.hits);
-    // console.log(response.data.hits.length);
-    // console.log(response);
     if (response.data.hits.length === 0) {
       Notiflix.Notify.warning(
         'Sorry, there are no images matching your search query. Please try again.'
@@ -57,11 +57,7 @@ async function fetchS(urlData, parametr) {
     }
     return await response.data;
   } catch (error) {
-    console.error(
-      error
-      // 'Sorry, there are no images matching your search query. Please try again.'
-    );
-    return error;
+    console.error(error);
   }
 }
 
@@ -123,9 +119,6 @@ async function handlerLoadMore() {
   } else {
     elements.btnLoadMore.hidden = true;
 
-    elements.galleryImg.insertAdjacentHTML(
-      'afterend',
-      "We're sorry, but you've reached the end of search results."
-    );
+    elements.warning.hidden = false;
   }
 }

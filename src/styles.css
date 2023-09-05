@@ -1,9 +1,9 @@
 .form {
   overflow: hidden;
   background-color: rgb(48, 118, 208);
-  position: fixed; /* Set the navbar to fixed position */
-  top: 0; /* Position the navbar at the top of the page */
-  width: 100%; /* Full width */
+  position: fixed;
+  top: 0;
+  width: 100%;
   display: flex;
   overflow: hidden;
   justify-content: center;
@@ -49,4 +49,9 @@
 
 .load-more {
   background-color: rgb(89, 98, 102);
+}
+
+.warning {
+  text-align: center;
+  background-color: rgb(61, 112, 139);
 }
